@@ -2,8 +2,8 @@
 This is a configuration file to store diferent storage config
 variables and constants.
 
-:author: $(git log -1 --pretty=format:'%an')
-:date: $(git log -1 --pretty=format:'%ad' --date=format:'%d-%m-%Y')
+:author: ${1:$(git log -1 --pretty=format:'%an')}
+:date: ${2:$(git log -1 --pretty=format:'%ad' --date=format:'%d-%m-%Y')}
 """
 
 import os

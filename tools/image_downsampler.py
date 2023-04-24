@@ -3,8 +3,8 @@ This module contains the functions to downsample the original images
 obtained from the source datasets to be used in the training of the
 different models.
 
-:author: $(git log -1 --pretty=format:'%an')
-:date: $(git log -1 --pretty=format:'%ad' --date=format:'%d-%m-%Y')
+:author: ${1:$(git log -1 --pretty=format:'%an')}
+:date: ${2:$(git log -1 --pretty=format:'%ad' --date=format:'%d-%m-%Y')}
 """
 
 import os

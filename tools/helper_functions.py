@@ -2,8 +2,8 @@
 This module contain all the different helper functions that would
 be used within our code but do not fit in any other module.
 
-:author: $(git log -1 --pretty=format:'%an')
-:date: $(git log -1 --pretty=format:'%ad' --date=format:'%d-%m-%Y')
+:author: ${1:$(git log -1 --pretty=format:'%an')}
+:date: ${2:$(git log -1 --pretty=format:'%ad' --date=format:'%d-%m-%Y')}
 """
 
 import os
