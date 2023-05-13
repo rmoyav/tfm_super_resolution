@@ -7,9 +7,16 @@ variables and constants.
 """
 
 import os
-from tools.helper_functions import get_root_dir
+from tools.dataset_storage import get_root_dir
 
 USE_DEFAULT_PATHS = True
 ROOT_DIR = get_root_dir()
 DATA_DIR = os.path.join(ROOT_DIR, 'data')
-DOWNSAMPLE_DIR = os.path.join(DATA_DIR, 'downsamples')
+
+DATASET1_NAME = "UCMerced_LandUse"
+DATASET1_DIR = os.path.join(DATA_DIR, DATASET1_NAME)
+DATASET1_DIR_READY = os.path.join(DATA_DIR, (DATASET1_NAME, '_rdy'))
+
+DATASET2_NAME = "inria"
+DATASET1_DIR = os.path.join(DATA_DIR, DATASET2_NAME)
+DATASET2_DIR_READY = os.path.join(DATA_DIR, (DATASET2_NAME, '_rdy'))
