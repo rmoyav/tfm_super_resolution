@@ -1,19 +1,56 @@
+"""
+This module contain all the different helper functions that would
+be used within our code but do not fit in any other module.
+
+:author: Ruben Moya Vazquez <rmoyav@uoc.edu>
+:date: 23/04/2023
+"""
 
 import os
+import subprocess
 
-from dataset_storage import train_val_test_split, DATA_DIR, DATASET1_NAME
-from image_resampler import process_images_in_folder
+from dataset_storage import ROOT_DIR, READY_DIR, DATA_DIR, DATASET1_NAME, train_val_test_split
+from image_info import drop_wrong_images
+
+###############################################################################
+#                                                                             #
+#                                 CONSTANTS                                   #
+#                                                                             #
+###############################################################################
+
+DATASET_OUTPUT = os.path.join(ROOT_DIR, 'models', 'Image-Super-Resolution-via-Iterative-Refinement',
+                      'dataset')
+SCRIPT = os.path.join(ROOT_DIR, 'models', 'Image-Super-Resolution-via-Iterative-Refinement',
+                      'data', 'prepare_data.py')
+PARAMETERS = ['--path', READY_DIR, '--out', DATASET_OUTPUT, '--size', '64,256']
+
+###############################################################################
+#                                                                             #
+#                                 FUNCTIONS                                   #
+#                                                                             #
+###############################################################################
+
+def call_prepare_data(script_path:str, parameters:list) -> None:
+    cmd = ['python', script_path] + parameters
+    subprocess.run(cmd)
 
 
 def pretrain_load() -> None:
-    ready_dir = os.path.join(DATA_DIR, DATASET1_NAME+'_rdy')
-    
-    if not os.path.isdir(ready_dir):
+    drop_wrong_images(os.path.join(DATA_DIR, DATASET1_NAME, 'Images'))
+    if not os.path.isdir(READY_DIR):
         train_val_test_split()
-    
-    for folder in os.listdir(ready_dir):
-        process_images_in_folder(os.path.join(ready_dir, folder, "hr_256"), 4)
+    for elem in ('train', 'val', 'test'):
+        custom_parameters = PARAMETERS.copy()
+        custom_parameters[1] = os.path.join(PARAMETERS[1], elem)
+        custom_parameters[3] = os.path.join(PARAMETERS[3], elem)
+        print(custom_parameters)
+        call_prepare_data(SCRIPT, custom_parameters)
 
+###############################################################################
+#                                                                             #
+#                                   MAIN                                      #
+#                                                                             #
+###############################################################################
 
 if __name__ == "__main__":
     pretrain_load()

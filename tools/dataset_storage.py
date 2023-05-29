@@ -3,7 +3,7 @@ This module contain all the different helper functions that would
 be used within our code but do not fit in any other module.
 
 :author: Ruben Moya Vazquez <rmoyav@uoc.edu>
-:date: 23/04/2023
+:date: 20/05/2023
 """
 
 import glob
@@ -37,9 +37,9 @@ def get_root_dir() -> str:
 ROOT_DIR = get_root_dir()
 DATA_DIR = os.path.join(ROOT_DIR, 'data')
 
-# Datasets
+# Dataset
 DATASET1_NAME = "UCMerced_LandUse"
-DATASET2_NAME = "inria"
+READY_DIR = os.path.join(DATA_DIR, DATASET1_NAME+'_ready')
 
 ###############################################################################
 #                                                                             #
@@ -82,16 +82,15 @@ def copy_imgs_in_place(images: list, destination: str) -> None:
 
 
 def train_val_test_split(data_dir: str = os.path.join(DATA_DIR, DATASET1_NAME, 'Images'),
-                         output_dir: str = os.path.join(
-                             DATA_DIR, DATASET1_NAME+'_rdy'),
-                         train_percent=.6, val_percent=.2, seed: int = -1) -> None:
+                         output_dir: str = READY_DIR, train_percent=.6, val_percent=.2,
+                         seed: int = -1) -> None:
     """This function will take a given directory and loop over every subfolder randomly grouping
     the images into three groups (train, val, test) keeping the propotions as told in the
     'train_percent' and 'val_percent' parameters.
 
     Args:
         data_dir (str, optional): directory containing the images. Defaults to os.path.join(DATA_DIR, DATASET1_NAME).
-        output_dir (str, optional): directory where the three groups of images will be stored. Defaults to os.path.join(DATA_DIR, DATASET1_NAME+'_rdy').
+        output_dir (str, optional): directory where the three groups of images will be stored. Defaults to READY_DIR.
         train_percent (float, optional): percentage of the total images set to train group. Defaults to .6.
         val_percent (float, optional): percentage of the total images set to val group. Defaults to .2.
         seed (int, optional): seed used to replicate the same subdivision. Defaults to -1.
@@ -101,22 +100,16 @@ def train_val_test_split(data_dir: str = os.path.join(DATA_DIR, DATASET1_NAME, '
         random.seed(seed)
     
     # train
-    train_dir = os.path.join(output_dir, 'train_64_256')
+    train_dir = os.path.join(output_dir, 'train')
     os.makedirs(train_dir, exist_ok=True)
-    train_dir_hr = os.path.join(train_dir, 'hr_256')
-    os.makedirs(train_dir_hr, exist_ok=True)
 
     # val
-    val_dir = os.path.join(output_dir, 'val_64_256')
+    val_dir = os.path.join(output_dir, 'val')
     os.makedirs(val_dir, exist_ok=True)
-    val_dir_hr = os.path.join(val_dir, 'hr_256')
-    os.makedirs(val_dir_hr, exist_ok=True)
 
     # test
-    test_dir = os.path.join(output_dir, 'test_64_256')
+    test_dir = os.path.join(output_dir, 'test')
     os.makedirs(test_dir, exist_ok=True)
-    test_dir_hr = os.path.join(test_dir, 'hr_256')
-    os.makedirs(test_dir_hr, exist_ok=True)
 
     for image_type in os.listdir(data_dir):
         images_paths = sorted(glob.glob(os.path.join(data_dir, image_type, "*.tif"), recursive=False))
@@ -125,9 +118,9 @@ def train_val_test_split(data_dir: str = os.path.join(DATA_DIR, DATASET1_NAME, '
         images_paths = [x for x in images_paths if x not in train]
         val = random.sample(images_paths, int(image_num * val_percent))
         test = [x for x in images_paths if x not in val]
-        copy_imgs_in_place(train, train_dir_hr)
-        copy_imgs_in_place(val, val_dir_hr)
-        copy_imgs_in_place(test, test_dir_hr)
+        copy_imgs_in_place(train, train_dir)
+        copy_imgs_in_place(val, val_dir)
+        copy_imgs_in_place(test, test_dir)
         train = []
         val = []
         test = []
