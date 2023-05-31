@@ -64,6 +64,7 @@ def drop_wrong_images(root_dir: str, std_width: int = 256, std_height: int = 256
         std_width (int, optional): standard width. Defaults to 256.
         std_height (int, optional): standard height. Defaults to 256.
     """
+    print('Cleaning the dataset of wrong images...')
     error_path = os.path.join(os.path.dirname(os.path.abspath(root_dir)), 'failed')
     os.makedirs(error_path, exist_ok=True)
     for current_path, folders, files in os.walk(root_dir):
