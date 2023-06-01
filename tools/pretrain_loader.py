@@ -8,8 +8,9 @@ be used within our code but do not fit in any other module.
 
 import os
 import subprocess
-
+import shutil
 from dataset_storage import ROOT_DIR, READY_DIR, train_val_test_split
+from models_storage import LIIF_DIR, SR3_DIR
 
 ###############################################################################
 #                                                                             #
@@ -22,6 +23,9 @@ DATASET_OUTPUT = os.path.join(ROOT_DIR, 'models', 'Image-Super-Resolution-via-It
 SCRIPT = os.path.join(ROOT_DIR, 'models', 'Image-Super-Resolution-via-Iterative-Refinement',
                       'data', 'prepare_data.py')
 PARAMETERS = ['--path', READY_DIR, '--out', DATASET_OUTPUT, '--size', '64,256']
+
+LIIF_DATA_DIR = os.path.join(LIIF_DIR, 'load')
+SR3_DATA_DIR = os.path.join(SR3_DIR, 'dataset')
 
 ###############################################################################
 #                                                                             #
@@ -42,6 +46,12 @@ def pretrain_load(train_percent=.6, val_percent=.2, seed: int = -1) -> None:
         custom_parameters[3] = os.path.join(PARAMETERS[3], elem)
         print(custom_parameters)
         call_prepare_data(SCRIPT, custom_parameters)
+
+    os.makedirs(LIIF_DATA_DIR, exist_ok=True)
+    for elem in os.listdir(SR3_DATA_DIR):
+        if "64_256" in elem:
+            shutil.copytree(os.path.join(SR3_DATA_DIR, elem),
+                            os.path.join(LIIF_DATA_DIR, elem), dirs_exist_ok=True)
 
 ###############################################################################
 #                                                                             #

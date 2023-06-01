@@ -119,7 +119,7 @@ def option3() -> None:
 
 def option4() -> None:
     print("Liif training configuration selection.")
-    config = select_file_from_config_dir(os.path(LIIF_CONFIG_DIR, LIIF_TRAIN_CONFIG))
+    config = select_file_from_config_dir(os.path.join(LIIF_CONFIG_DIR, LIIF_TRAIN_CONFIG))
     print("Launching Liif training...")
     train_liif(config)
     print("Done!!")
@@ -133,7 +133,7 @@ def option5() -> None:
 
 def option6() -> None:
     print("Liif training configuration selection.")
-    config = select_file_from_config_dir(os.path(LIIF_CONFIG_DIR, LIIF_TRAIN_CONFIG))
+    config = select_file_from_config_dir(os.path.join(LIIF_CONFIG_DIR, LIIF_TRAIN_CONFIG))
     print("Launching Liif validation...")
     # WIP: Working in this function
     val_liif(config)

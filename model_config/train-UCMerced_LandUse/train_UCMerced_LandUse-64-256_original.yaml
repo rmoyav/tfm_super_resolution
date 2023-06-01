@@ -1,27 +1,34 @@
 train_dataset:
   dataset:
-    name: paired-image-folders
+    name: image-folder
     args:
-      root_path_1: ./load/train_64_256/lr_64
-      root_path_2: ./load/train_64_256/hr_256
+      root_path: ./load/train_64_256/hr_256
+      repeat: 20
       cache: bin
   wrapper:
-    name: sr-implicit-paired
+    name: sr-implicit-downsampled
     args:
-      sample_q: 256
+      inp_size: 48
+      scale_max: 4
+      augment: true
+      sample_q: 2304
   batch_size: 16
 
 val_dataset:
   dataset:
-    name: paired-image-folders
+    name: image-folder
     args:
-      root_path_1: ./load/val_64_256/lr_64
-      root_path_2: ./load/val_64_256/hr_256
+      root_path: ./load/val_64_256/hr_256
+      first_k: 10
+      repeat: 160
       cache: bin
   wrapper:
-    name: sr-implicit-paired
+    name: sr-implicit-downsampled
     args:
-      sample_q: 256
+      inp_size: 48
+      scale_max: 4
+      augment: true
+      sample_q: 2304
   batch_size: 16
 
 data_norm:
@@ -45,7 +52,7 @@ optimizer:
   name: adam
   args:
     lr: 1.e-4
-epoch_max: 1632
+epoch_max: 1000
 multi_step_lr:
   milestones: [100]
   gamma: 0.1

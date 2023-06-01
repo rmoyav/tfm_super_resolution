@@ -28,7 +28,8 @@ CONFIG_DIR = os.path.join(ROOT_DIR, 'model_config')
 # SR3 repo
 SR3_REPO = "https://github.com/Janspiry/Image-Super-Resolution-via-Iterative-Refinement.git"
 SR3_REPO_NAME = 'Image-Super-Resolution-via-Iterative-Refinement'
-SR3_CONFIG_DIR = os.path.join(ROOT_DIR, 'models', SR3_REPO_NAME, 'config')
+SR3_DIR = os.path.join(ROOT_DIR, 'models', SR3_REPO_NAME)
+SR3_CONFIG_DIR = os.path.join(SR3_DIR, 'config')
 SR3_CONFIG_TRAIN_FILENAME = 'sr_sr3_64_256.json'
 SR3_CONFIG_TEST_FILENAME = 'sr_sr3_64_256_test.json'
 
