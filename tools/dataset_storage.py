@@ -3,12 +3,13 @@ This module contain all the different helper functions that would
 be used within our code but do not fit in any other module.
 
 :author: Ruben Moya Vazquez <rmoyav@uoc.edu>
-:date: 20/05/2023
+:date: 31/05/2023
 """
 
 import glob
 import os
 import random
+import shutil
 
 import cv2
 
@@ -98,6 +99,10 @@ def train_val_test_split(data_dir: str = os.path.join(DATA_DIR, DATASET1_NAME, '
 
     if seed != -1:
         random.seed(seed)
+
+    if os.path.exists(output_dir) and os.path.isdir(output_dir):
+        print(f"Removing previous content of {output_dir}")
+        shutil.rmtree(output_dir)
     
     # train
     train_dir = os.path.join(output_dir, 'train')

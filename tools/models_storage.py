@@ -29,20 +29,46 @@ CONFIG_DIR = os.path.join(ROOT_DIR, 'model_config')
 SR3_REPO = "https://github.com/Janspiry/Image-Super-Resolution-via-Iterative-Refinement.git"
 SR3_REPO_NAME = 'Image-Super-Resolution-via-Iterative-Refinement'
 SR3_CONFIG_DIR = os.path.join(ROOT_DIR, 'models', SR3_REPO_NAME, 'config')
-SR3_CONFIG_FILENAME = 'sr_sr3_64_256.json'
+SR3_CONFIG_TRAIN_FILENAME = 'sr_sr3_64_256.json'
+SR3_CONFIG_TEST_FILENAME = 'sr_sr3_64_256_test.json'
 
 # Liif repo
 LIIF_REPO = "https://github.com/yinboc/liif.git"
 LIIF_REPO_NAME = 'liif'
-LIIF_CONFIG_DIR = os.path.join(ROOT_DIR, 'models', LIIF_REPO_NAME, 'config')
+LIIF_DIR = os.path.join(ROOT_DIR, 'models', LIIF_REPO_NAME)
+LIIF_CONFIG_DIR = os.path.join(ROOT_DIR, 'models', LIIF_REPO_NAME, 'configs')
+LIIF_TEST_CONFIG_DIR = os.path.join(LIIF_CONFIG_DIR, 'test')
 LIIF_TRAIN_CONFIG = "train-UCMerced_LandUse"
 LIIF_TEST_CONFIG_FILENAME = "test-UCMerced_LandUse-64-256.yaml"
+INFER_SCRIPT_NAME = "infer.py"
+INFER_SCRIPT_FOLDER = os.path.join(ROOT_DIR, 'liif_script')
 
 ###############################################################################
 #                                                                             #
 #                                 FUNCTIONS                                   #
 #                                                                             #
 ###############################################################################
+
+def copy_liif_infer_file() -> None:
+    """This function is meant to copy the infer.py script into the liif
+    repository dir to be used after.
+
+    Raises:
+        FileNotFoundError: raised if the infer.py script file does not exist
+        FileNotFoundError: raised if the liif model folder could not be found
+    """
+    source_file = os.path.join(INFER_SCRIPT_FOLDER, INFER_SCRIPT_NAME)
+
+    if not os.path.isfile(source_file):
+        raise FileNotFoundError(f"The file '{INFER_SCRIPT_NAME}' could not be found at '{source_file}'!!")
+    
+    if not os.path.exists(LIIF_DIR):
+        raise FileNotFoundError(f"The '{LIIF_DIR}' does not exist. Please download the model repositories before copying the files!!")
+
+    destination_file = os.path.join(LIIF_DIR, INFER_SCRIPT_NAME)
+    shutil.copy(source_file, destination_file)
+    print(f"The config file '{INFER_SCRIPT_NAME}' has been copied to '{LIIF_DIR}'.")
+
 
 def copy_config_folder_liif() -> None:
     """This function will copy the configuration for the liif model into
@@ -57,7 +83,7 @@ def copy_config_folder_liif() -> None:
     destination_folder = os.path.join(LIIF_CONFIG_DIR, LIIF_TRAIN_CONFIG)
 
     if not os.path.isdir(source_folder):
-        raise FileNotFoundError(f"La carpeta {LIIF_TRAIN_CONFIG} no existe en la ubicación de origen {source_folder}.")
+        raise FileNotFoundError(f"The folder '{LIIF_TRAIN_CONFIG}'does not exist within the path '{source_folder}'!!")
     
     if not os.path.isfile(source_file):
         raise FileNotFoundError(f"The config file '{LIIF_TEST_CONFIG_FILENAME}' cannot be found in '{CONFIG_DIR}'!!")
@@ -65,34 +91,44 @@ def copy_config_folder_liif() -> None:
     if not os.path.exists(LIIF_CONFIG_DIR):
         os.makedirs(LIIF_CONFIG_DIR)
 
-    destination_file = os.path.join(LIIF_CONFIG_DIR, LIIF_TEST_CONFIG_FILENAME)
+    destination_file = os.path.join(LIIF_TEST_CONFIG_DIR, LIIF_TEST_CONFIG_FILENAME)
     shutil.copy(source_file, destination_file)
-    print(f"The config file '{LIIF_TEST_CONFIG_FILENAME}' has been copied to '{LIIF_CONFIG_DIR}'.")
+    print(f"The config file '{LIIF_TEST_CONFIG_FILENAME}' has been copied to '{LIIF_TEST_CONFIG_DIR}'.")
 
     if os.path.exists(destination_folder):
         shutil.rmtree(destination_folder)
 
     shutil.copytree(source_folder, destination_folder)
-    print(f"La carpeta {LIIF_TRAIN_CONFIG} ha sido copiada a {destination_folder}.")
+    print(f"The folder '{LIIF_TRAIN_CONFIG}' has been copied to '{destination_folder}'!!")
 
 
-def copy_config_file_sr3() -> None:
-    """This function is meant to copy the config file for SR3 model into
+def copy_config_files_sr3() -> None:
+    """This function is meant to copy the config files for SR3 model into
     its default configuration folder.
 
     Raises:
         FileNotFoundError: raised if the SR3_CONFIG_FILENAME cannot be found within CONFIG_DIR folder
     """
-    source_file = os.path.join(CONFIG_DIR, SR3_CONFIG_FILENAME)
+    source_file = os.path.join(CONFIG_DIR, SR3_CONFIG_TRAIN_FILENAME)
+    source_file_2 = os.path.join(CONFIG_DIR, SR3_CONFIG_TEST_FILENAME)
+
     if not os.path.isfile(source_file):
-        raise FileNotFoundError(f"The config file '{SR3_CONFIG_FILENAME}' cannot be found in '{CONFIG_DIR}'!!")
+        raise FileNotFoundError(f"The config file '{SR3_CONFIG_TRAIN_FILENAME}' cannot be found in '{CONFIG_DIR}'!!")
+    
+    if not os.path.isfile(source_file_2):
+        raise FileNotFoundError(f"The config file '{SR3_CONFIG_TEST_FILENAME}' cannot be found in '{CONFIG_DIR}'!!")
 
     if not os.path.exists(SR3_CONFIG_DIR):
         os.makedirs(SR3_CONFIG_DIR)
 
-    destination_file = os.path.join(SR3_CONFIG_DIR, SR3_CONFIG_FILENAME)
+    destination_file = os.path.join(SR3_CONFIG_DIR, SR3_CONFIG_TRAIN_FILENAME)
+    destination_file_2 = os.path.join(SR3_CONFIG_DIR, SR3_CONFIG_TEST_FILENAME)
+
     shutil.copy(source_file, destination_file)
-    print(f"The config file '{SR3_CONFIG_FILENAME}' has been copied to '{SR3_CONFIG_DIR}'.")
+    print(f"The config file '{SR3_CONFIG_TRAIN_FILENAME}' has been copied to '{SR3_CONFIG_DIR}'.")
+
+    shutil.copy(source_file_2, destination_file_2)
+    print(f"The config file '{SR3_CONFIG_TEST_FILENAME}' has been copied to '{SR3_CONFIG_DIR}'.")
 
 
 def download_repos() -> None:

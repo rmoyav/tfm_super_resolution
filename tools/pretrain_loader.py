@@ -3,14 +3,13 @@ This module contain all the different helper functions that would
 be used within our code but do not fit in any other module.
 
 :author: Ruben Moya Vazquez <rmoyav@uoc.edu>
-:date: 23/04/2023
+:date: 31/04/2023
 """
 
 import os
 import subprocess
 
-from dataset_storage import ROOT_DIR, READY_DIR, DATA_DIR, DATASET1_NAME, train_val_test_split
-from image_info import drop_wrong_images
+from dataset_storage import ROOT_DIR, READY_DIR, train_val_test_split
 
 ###############################################################################
 #                                                                             #
@@ -36,9 +35,7 @@ def call_prepare_data(script_path:str, parameters:list) -> None:
 
 
 def pretrain_load(train_percent=.6, val_percent=.2, seed: int = -1) -> None:
-    drop_wrong_images(os.path.join(DATA_DIR, DATASET1_NAME, 'Images'))
-    if not os.path.isdir(READY_DIR):
-        train_val_test_split(train_percent=train_percent, val_percent=val_percent, seed=seed)
+    train_val_test_split(train_percent=train_percent, val_percent=val_percent, seed=seed)
     for elem in ('train', 'val', 'test'):
         custom_parameters = PARAMETERS.copy()
         custom_parameters[1] = os.path.join(PARAMETERS[1], elem)

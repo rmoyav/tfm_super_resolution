@@ -6,10 +6,14 @@ problems.
 :author: Ruben Moya Vazquez <rmoyav@uoc.edu>
 :date: 28/05/2023
 """
+import os
 
-from models_storage import download_repos
+from models_storage import (download_repos, copy_config_files_sr3, copy_config_folder_liif,
+                            copy_liif_infer_file, LIIF_CONFIG_DIR, SR3_CONFIG_DIR, LIIF_TRAIN_CONFIG)
 from pretrain_loader import pretrain_load
-from trainvaltest_functions import train_sr3, train_liif, val_sr3, val_liif, test_sr3, test_liif
+from trainvaltest_functions import train_sr3, train_liif, val_sr3, val_liif, test_sr3, test_liif, select_file_from_config_dir
+from dataset_storage import DATA_DIR, DATASET1_NAME
+from image_info import drop_wrong_images
 
 ###############################################################################
 #                                                                             #
@@ -76,6 +80,14 @@ def get_train_val() -> tuple:
     return train_percent, val_percent
 
 
+def get_liif_input_dir() -> str:
+    path = ''
+    not_found_dir = True
+    while not_found_dir:
+        input_dir = input("Choose an input directory:")
+    return path
+
+
 def option1() -> None:
     print("Downloading model repos...")
     download_repos()
@@ -84,41 +96,60 @@ def option1() -> None:
 def option2() -> None:
     seed = get_seed_value()
     train_percent, val_percent = get_train_val()
+    print("Removing images with errors...")
+    drop_wrong_images(os.path.join(DATA_DIR, DATASET1_NAME, 'Images'))
     print("Executing pre-train scripts...")
     pretrain_load(train_percent=train_percent, val_percent=val_percent, seed=seed)
+    try:
+        print("Copying configuration files...")
+        copy_config_files_sr3()
+        copy_config_folder_liif()
+        print("Copying infer script...")
+        copy_liif_infer_file()
+    except FileNotFoundError:
+        print("One or more of the files could not be copied. Please copy it manually.")
     print("Done!!")
 
 def option3() -> None:
+    print("SR3 training configuration selection.")
+    config = select_file_from_config_dir(SR3_CONFIG_DIR)
     print("Launching SR3 training...")
-    train_sr3()
+    train_sr3(config)
     print("Done!!")
 
 def option4() -> None:
+    print("Liif training configuration selection.")
+    config = select_file_from_config_dir(os.path(LIIF_CONFIG_DIR, LIIF_TRAIN_CONFIG))
     print("Launching Liif training...")
-    train_liif()
+    train_liif(config)
     print("Done!!")
 
 def option5() -> None:
+    print("SR3 validation configuration selection.")
+    config = select_file_from_config_dir(SR3_CONFIG_DIR)
     print("Launching SR3 validation...")
-    val_sr3()
+    val_sr3(config)
     print("Done!!")
 
 def option6() -> None:
+    print("Liif training configuration selection.")
+    config = select_file_from_config_dir(os.path(LIIF_CONFIG_DIR, LIIF_TRAIN_CONFIG))
     print("Launching Liif validation...")
     # WIP: Working in this function
-    val_liif()
+    val_liif(config)
     print("Done!!")
     
 def option7() -> None:
+    print("SR3 testing configuration selection.")
+    config = select_file_from_config_dir(SR3_CONFIG_DIR)
     print("Launch SR3 infering process...")
-    test_sr3()
+    test_sr3(config)
     print("Done!!")
 
 def option8() -> None:
     # WIP: Working in this function
-    not_found_dir = True
-    while not_found_dir:
-        input_dir = input("Choose an input directory:")
+    input_dir = get_liif_input_dir()
+    #model_path = get_liif_model_path()
     print("Launching Liif infering process...")
     test_liif()
     print("Done!!")

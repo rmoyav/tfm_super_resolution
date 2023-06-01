@@ -67,7 +67,8 @@ def drop_wrong_images(root_dir: str, std_width: int = 256, std_height: int = 256
     print('Cleaning the dataset of wrong images...')
     error_path = os.path.join(os.path.dirname(os.path.abspath(root_dir)), 'failed')
     os.makedirs(error_path, exist_ok=True)
-    for current_path, folders, files in os.walk(root_dir):
+
+    for current_path, _, files in os.walk(root_dir):
         for tmpfile in files:
             if tmpfile.endswith('.tif'):
                 full_path = os.path.join(current_path, tmpfile)
@@ -81,5 +82,4 @@ def drop_wrong_images(root_dir: str, std_width: int = 256, std_height: int = 256
                     shutil.move(full_path, os.path.join(error_path, tmpfile))
                     print(
                         f"File '{os.path.basename(full_path)}' has some errors and will be stored in {error_path}")
-                finally:
-                    delete_folder(error_path)
+    delete_folder(error_path)
