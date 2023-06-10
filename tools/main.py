@@ -9,9 +9,11 @@ problems.
 import os
 
 from models_storage import (download_repos, copy_config_files_sr3, copy_config_folder_liif,
-                            copy_liif_infer_file, LIIF_CONFIG_DIR, SR3_CONFIG_DIR, LIIF_TRAIN_CONFIG)
+                            copy_liif_infer_file, LIIF_CONFIG_DIR, SR3_CONFIG_DIR, LIIF_TRAIN_CONFIG,
+                            LIIF_SAVE_DIR, LIIF_DIR)
 from pretrain_loader import pretrain_load
-from trainvaltest_functions import train_sr3, train_liif, val_sr3, val_liif, test_sr3, test_liif, select_file_from_config_dir
+from trainvaltest_functions import (train_sr3, train_liif, val_sr3, val_liif, test_sr3, 
+                                    test_liif, select_file_from_config_dir, select_model)
 from dataset_storage import DATA_DIR, DATASET1_NAME
 from image_info import drop_wrong_images
 
@@ -81,11 +83,20 @@ def get_train_val() -> tuple:
 
 
 def get_liif_input_dir() -> str:
-    path = ''
-    not_found_dir = True
-    while not_found_dir:
-        input_dir = input("Choose an input directory:")
-    return path
+    """This function is meant to ask the user for an input directory storing
+    all the images to be used by the liif's infer proccess
+
+    Returns:
+        str: relative path to the input dir.
+    """
+    while True:
+        rel_path = input("Please select an input directory containint the images you want to infer.\nThis directory must be under '~/models/liif':")
+        abs_path = os.path.join(LIIF_DIR, rel_path)
+        if os.path.isdir(abs_path):
+            print(f"Found'{rel_path}' dir.")
+            return rel_path
+        else:
+            print(f"'{rel_path}' directory could not be found under '~/models/liif'. Please, try again.")
 
 
 def option1() -> None:
@@ -134,10 +145,11 @@ def option5() -> None:
 def option6() -> None:
     print("Liif training configuration selection.")
     config = select_file_from_config_dir(os.path.join(LIIF_CONFIG_DIR, LIIF_TRAIN_CONFIG))
-    print("Launching Liif validation...")
-    # WIP: Working in this function
-    val_liif(config)
-    print("Done!!")
+    model_path = select_model(LIIF_SAVE_DIR)
+    if model_path:
+        print("Launching Liif validation...")
+        val_liif(config, model_path)
+        print("Done!!")
     
 def option7() -> None:
     print("SR3 testing configuration selection.")
@@ -147,12 +159,12 @@ def option7() -> None:
     print("Done!!")
 
 def option8() -> None:
-    # WIP: Working in this function
     input_dir = get_liif_input_dir()
-    #model_path = get_liif_model_path()
-    print("Launching Liif infering process...")
-    test_liif()
-    print("Done!!")
+    model_path = select_model(LIIF_SAVE_DIR)
+    if model_path and input_dir:
+        print("Launching Liif infering process...")
+        test_liif(input_dir, model_path)
+        print("Done!!")
 
 def main():
     while True:

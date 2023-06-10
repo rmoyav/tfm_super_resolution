@@ -43,6 +43,7 @@ LIIF_TRAIN_CONFIG = "train-UCMerced_LandUse"
 LIIF_TEST_CONFIG_FILENAME = "test-UCMerced_LandUse-64-256.yaml"
 INFER_SCRIPT_NAME = "infer.py"
 INFER_SCRIPT_FOLDER = os.path.join(ROOT_DIR, 'liif_script')
+LIIF_SAVE_DIR = os.path.join(LIIF_DIR, 'save')
 
 ###############################################################################
 #                                                                             #

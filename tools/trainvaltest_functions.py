@@ -9,7 +9,7 @@ automated process of training, validating and testing the models.
 import os
 import subprocess
 
-from models_storage import LIIF_REPO_NAME, SR3_REPO_NAME
+from models_storage import LIIF_REPO_NAME, SR3_REPO_NAME, LIIF_DIR
 
 ###############################################################################
 #                                                                             #
@@ -66,6 +66,42 @@ def select_file_from_config_dir(config_dir:str) -> str:
                 print(f"Please, select a number between 1 and {len(files)}.")
         except ValueError:
             print("Please, select a valid number or press Ctrl+c to leave.")
+
+
+def select_model(save_dir:str) -> str:
+    """This function will ask the user to chose one checkpoint to use for their
+    validation/test jobs.
+
+    Args:
+        save_dir (str): Path to the 'save' directory were checkpoints are stored
+
+    Returns:
+        str: relative path to the selected checkpoint
+    """
+    checkpoints = []
+
+    for root, dirs, files in os.walk(save_dir):
+        for found in files:
+            if found.endswith('.pth'):
+                checkpoints.append(os.path.relpath(os.path.join(root, found), LIIF_DIR))
+    
+    if checkpoints:
+        print("Liif checkpoints found:")
+        for index, checkpoint in enumerate(checkpoints, start=1):
+            print(f"{index}. {checkpoint}")
+
+        while True:
+            try:
+                chosen = int(input("Chose one by number: "))
+                if 1 <= chosen <= len(checkpoints):
+                    return checkpoints[chosen-1]
+                else:
+                    print(f"Please, enter a number between 1 and {len(checkpoints)}")
+            except ValueError:
+                print("Please, select a valid number.")
+    else:
+        print("No liif checkpoint could be found")
+        return None
 
 
 def train_sr3(config_file:str) -> None:
