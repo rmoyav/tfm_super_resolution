@@ -8,7 +8,7 @@ train_dataset:
   wrapper:
     name: sr-implicit-downsampled
     args:
-      inp_size: 48
+      inp_size: 60
       scale_max: 4
       augment: true
       sample_q: 2304
@@ -25,9 +25,8 @@ val_dataset:
   wrapper:
     name: sr-implicit-downsampled
     args:
-      inp_size: 48
+      inp_size: 60
       scale_max: 4
-      augment: true
       sample_q: 2304
   batch_size: 16
 
@@ -55,7 +54,7 @@ optimizer:
 epoch_max: 1000
 multi_step_lr:
   milestones: [100]
-  gamma: 0.1
+  gamma: 0.5
 
 epoch_val: 1
 epoch_save: 100
