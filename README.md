@@ -58,7 +58,7 @@ Super-resolution is a class of techniques used in image processing that enhances
 ## Structure of the Repository (before and after the main script has been used)
 - `data/`: Contains the data used for training and validation.
 - `liif_script/`: Contains the custom infer script for the **liif** model
-- `model_config/`: Contains the data used for training and validation.
+- `model_config/`: Contains the configuration files used for training and validation.
 - `models/`: Contains the **liif** and **SR3** model repositories.
 - `tools/`: Contains the code developed for this project.
 - `tools/main.py`: Main script that automates the entire pipeline through a user-friendly menu.
